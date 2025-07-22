@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Night Owl Timer</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+    }
+
+    input {
+      font-size: 1.2rem;
+      padding: 5px;
+      width: 100px;
+    }
+
+    button {
+      font-size: 1.2rem;
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #1e1e1e;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #333;
+    }
+
+    #timer {
+      font-size: 4rem;
+      margin: 30px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌙 Night Owl Timer</h1>
+  <div>
+    <label for="hours">Hours:</label>
+    <input type="number" id="hours" value="0">
+  </div>
+  <div>
+    <label for="minutes">Minutes:</label>
+    <input type="number" id="minutes" value="60">
+  </div>
+  <div id="timer">00:00:00</div>
+  <div>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="pauseTimer()">Pause</button>
+    <button onclick="resumeTimer()">Resume</button>
+    <button onclick="resetTimer()">Reset</button>
+  </div>
+
+  <script>
+    let totalSeconds;
+    let remainingSeconds;
+    let timerInterval;
+    let isPaused = false;
+
+    function formatTime(seconds) {
+      const hrs = Math.floor(seconds / 3600);
+      const mins = Math.floor((seconds % 3600/60));
+      const secs = seconds % 60;
+      return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function updateDisplay() {
+      document.getElementById("timer").innerText = formatTime(remainingSeconds);
+    }
+
+    function startTimer() {
+      const hoursInput = document.getElementById("hours").value;
+      const minutesInput = document.getElementById("minutes").value;
+      totalSeconds = parseInt(hoursInput) * 3600 + parseInt(minutesInput) * 60;
+      if (isNaN(totalSeconds) || totalSeconds <= 0) return;
+
+      remainingSeconds = totalSeconds;
+      clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+        if (!isPaused) {
+          remainingSeconds--;
+          updateDisplay();
+          if (remainingSeconds <= 0) {
+            clearInterval(timerInterval);
+          }
+        }
+      }, 1000);
+
+      updateDisplay();
+    }
+
+    function pauseTimer() {
+      isPaused = true;
+    }
+
+    function resumeTimer() {
+      isPaused = false;
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      remainingSeconds = totalSeconds;
+      updateDisplay();
+    }
+  </script>
+</body>
+</html>
+
+
+
