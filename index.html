@@ -78,7 +78,7 @@
     }
 
     function updateDisplay() {
-      document.getElementById("timer").innerText = formatTime(remainingSeconds);
+      document.getElementById("timer").innerText = formatTime(Math.max(remainingSeconds,0));
     }
 
     function tick() {
@@ -111,8 +111,11 @@
     }
 
     function pauseTimer() {
+     if (!isPaused) {
       isPaused = true;
       pauseTime = Date.now();
+      clearInterval(timerInterval);
+    }
     }
 
     function resumeTimer() {
@@ -120,18 +123,22 @@
         const pauseDuration = Date.now() - pauseTime;
         startTime += pauseDuration;
         isPaused = false;
+        timerInterval = setInterval(tick, 1000);
       }
     }
 
-    function resetTimer() {
-      clearInterval(timerInterval);
-      remainingSeconds = totalSeconds;
-      updateDisplay();
-      isPaused = false;
-      startTime = Date.now();
-      timerInterval = setInterval(tick, 1000);
-    }
-  </script>
+  function resetTimer() {
+    clearInterval(timerInterval);
+    isPaused = false;
+    pauseTime = 0;
+
+    const hoursInput = parseInt(document.getElementById("hours").value) || 0;
+    const minutesInput = parseInt(document.getElementById("minutes").value) || 0;
+    totalSeconds = hoursInput * 3600 + minutesInput * 60;
+    remainingSeconds = totalSeconds;
+    updateDisplay();
+  }
+</script>
 </body>
 </html>
 
